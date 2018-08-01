@@ -15,7 +15,7 @@ describe("ContractService", function() {
   let contractService
 
   before(async () => {
-    let provider = new Web3.providers.HttpProvider("http://localhost:9545")
+    let provider = new Web3.providers.HttpProvider("http://localhost:8545")
     let web3 = new Web3(provider)
     contractService = new ContractService({ web3 })
 
@@ -92,6 +92,27 @@ describe("ContractService", function() {
         "ipfsHash",
         "price",
         "unitsAvailable"
+      )
+    })
+  })
+
+  describe("passing in contract addresses", () => {
+    it("should allow contract addresses to be overridden", () => {
+      const web3 = new Web3()
+      const userAddress = "0x1234567890123456789012345678901234567890"
+      const registryAddress = "0x9876543210987654321098765432109876543210"
+      const contractAddresses = {
+        userRegistryContract: { 4: { address: userAddress } },
+        listingsRegistryContract: { 4: { address: registryAddress } }
+      }
+
+      var contSrv = new ContractService({ web3, contractAddresses })
+
+      expect(contSrv.userRegistryContract.networks[4].address).to.equal(
+        userAddress
+      )
+      expect(contSrv.listingsRegistryContract.networks[4].address).to.equal(
+        registryAddress
       )
     })
   })
